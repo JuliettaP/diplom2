@@ -5,7 +5,9 @@ import io.restassured.response.ValidatableResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import junitparams.naming.TestCaseName;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import site.stellarburgers.client.UserClient;
@@ -34,8 +36,6 @@ public class RegisterUserTest {
         token = responseRegister.extract().path("accessToken");
         statusCode = responseRegister.extract().statusCode();
         isRegistered = responseRegister.extract().path("success");
-
-        ValidatableResponse responseDelete = UserClient.deleteUser(token);
 
         Assert.assertEquals("Ошибка в коде или теле ответа", List.of(SC_OK, true),
                 List.of(statusCode, isRegistered));
@@ -71,6 +71,14 @@ public class RegisterUserTest {
         Assert.assertEquals("Ошибка в коде или теле ответа", List.of(SC_FORBIDDEN, false),
                 List.of(statusCode, isRegistered));
     }
+
+    @After
+    public void tearDown()
+    {
+        if (!token.isEmpty())
+            UserClient.deleteUser(token);
+    }
+
     private Object[][] registerUserWithOneEmptyFieldParameters() {
         return new Object[][]{
                 {EMAIL}, {PASSWORD}, {NAME},

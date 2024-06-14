@@ -34,8 +34,10 @@ public class UpdateUserTest {
     }
 
     @After
-    public void tearDown(){
-        ValidatableResponse responseDelete = UserClient.deleteUser(token);
+    public void tearDown()
+    {
+        if (!token.isEmpty())
+            UserClient.deleteUser(token);
     }
 
     @Test
